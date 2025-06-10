@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Analyzer</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Fira+Mono&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', Arial, sans-serif;
+            background: linear-gradient(120deg, #f4f6fb 0%, #e9eafc 100%);
+            color: #232946;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 32px 24px;
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 4px 32px rgba(44, 62, 80, 0.10);
+            animation: fadeIn 0.7s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(40px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        h2 {
+            color: #091c3f;
+            margin-top: 0;
+            letter-spacing: 2px;
+            text-align: center;
+            font-family: sans-serif;
+            font-weight: 600;
+        }
+        .upload-section, .query-section {
+            margin: 32px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .upload-section input[type="file"] {
+            margin-bottom: 16px;
+        }
+        .btn {
+            background: linear-gradient(90deg, #4f8cff 0%, #6a82fb 100%);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 32px;
+            font-size: 1em;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 8px;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+        }
+        .btn:hover {
+            background: linear-gradient(90deg, #6a82fb 0%, #4f8cff 100%);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .card {
+            background: #f7fafc;
+            border: 1px solid #e3e8ee;
+            border-radius: 12px;
+            padding: 20px 18px;
+            margin: 24px 0;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+            overflow-x: auto;
+            animation: fadeIn 0.7s;
+        }
+        .filename {
+            color: #6a82fb;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 8px;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        label {
+            font-weight: 500;
+            margin-bottom: 4px;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        input[type="text"] {
+            padding: 8px;
+            border: 1px solid #bfc9d1;
+            border-radius: 6px;
+            font-size: 1em;
+            width: 100%;
+            margin-bottom: 12px;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        .answer-section {
+            margin-top: 24px;
+            max-width: 100%;
+        }
+        .answer-section pre {
+            font-family: 'Fira Mono', monospace;
+            font-size: 1em;
+            margin: 0;
+            background: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #e3e8ee;
+            padding: 12px;
+            white-space: pre-wrap;      /* allow wrapping */
+            word-break: break-word;     /* break long words */
+            max-height: 320px;          /* limit height */
+            overflow-y: auto;           /* vertical scroll if needed */
+            overflow-x: hidden;         /* prevent horizontal scroll */
+        }
+        .table-section {
+            margin-top: 16px;
+        }
+        .table-section table {
+            border-collapse: collapse;
+            width: 100%;
+            background: #fff;
+            font-family: 'Fira Mono', monospace;
+        }
+        .table-section th, .table-section td {
+            border: 1px solid #d3d8e8;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .table-section th {
+            background: #e9eafc;
+            color: #4f8cff;
+        }
+        /* Scrollable structured data */
+        .structured-scroll {
+            max-height: 320px;
+            overflow: auto;
+            background: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #e3e8ee;
+            font-family: 'Fira Mono', monospace;
+            font-size: 1em;
+            padding: 12px;
+        }
+        pre {
+            font-family: 'Fira Mono', monospace;
+            font-size: 1em;
+            margin: 0;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        @media (max-width: 700px) {
+            .container { padding: 12px 2vw; }
+            .card { padding: 10px 4vw; }
+            .structured-scroll { font-size: 0.95em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Document Analyzer</h2>
+        <!-- Upload Section -->
+        <div class="upload-section">
+            <form method="post" enctype="multipart/form-data">
+                <input type="file" name="file" required>
+                <button class="btn" type="submit">Upload & Analyze</button>
+            </form>
+        </div>
+        <!-- Structured Data Section -->
+        {% if filename and structured_data %}
+            <div class="card">
+                <div class="filename">File uploaded: {{ filename }}</div>
+                <h3 style="margin-top:0;">Structured Data</h3>
+                <div class="structured-scroll"><pre style="white-space:pre-wrap;">{{ structured_data }}</pre></div>
+            </div>
+            <!-- Table Section (if any tables extracted) -->
+            {% if tables_html %}
+                <div class="card table-section">
+                    <h3>Extracted Tables</h3>
+                    {{ tables_html|safe }}
+                </div>
+            {% endif %}
+            <!-- Query Section -->
+            <div class="query-section">
+                <form method="post">
+                    <input type="hidden" name="filename" value="{{ filename }}">
+                    <label for="query">Ask a question about this document:</label>
+                    <input type="text" name="query" id="query" placeholder="e.g. What is the invoice date?" required>
+                    <button class="btn" type="submit">Get Answer</button>
+                </form>
+            </div>
+        {% endif %}
+        <!-- Answer Section -->
+        {% if answer %}
+            <div class="card answer-section">
+                <h3>Answer</h3>
+                <pre>{{ answer }}</pre>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
