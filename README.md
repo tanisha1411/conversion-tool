@@ -1,18 +1,22 @@
 # Conversion-tool
-Convert unstructured documents into structured data and get instant insights using Python and GPT-based LLMs.
+Convert unstructured documents into structured data and get instant insights using Python.
 
+# 🧠 Unstructured Data Converter and Analyzer (Offline)
 
-# 🧠 Unstructured to Structured Data Analytics Tool
-
-This project converts unstructured files (PDFs, Word documents, images, and plain text) into structured JSON data and allows users to query them instantly using GPT-based language models. It’s designed to be integrated with chatbot systems or used as a standalone analysis module.
+A Python tool that extracts and structures data from various unstructured formats like PDFs, DOCX, images, and TXT files — and allows local querying of the structured results.
 
 ---
 
 ## 🔍 Features
 
-- 📄 Extracts text from PDF, DOCX, images (OCR), and TXT files
-- 🧠 Uses GPT (via API) to structure raw text into JSON
-- ❓ Supports natural language queries on extracted data
-- 🛠 Modular architecture for easy extension and chatbot integration
+- 📄 Extracts text from:
+  - PDF files
+  - Word documents (.docx)
+  - Images (JPG, PNG) using OCR
+  - Plain text files
+- 🗃️ Converts raw text into structured key-value pairs
+- 🔎 Supports querying of structured data using fuzzy matching
+- 📊 Extracts tables from PDF files (via `pdfplumber`)
+- 🚫 Does **not** require any external APIs or internet connection
 
 ---
